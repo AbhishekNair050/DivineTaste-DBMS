@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eff5eb;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-family: Arial, sans-serif;
+            color: #f2f2f2;
+        }
+
+        /* Table header */
+        th {
+            background-color: #716868;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Table rows */
+        tr {
+            border-bottom: 1px solid #ddd;
+            background-color: #514165;
+        }
+
+        /* Table data */
+        td {
+            text-align: left;
+            padding: 12px;
+        }
+        /* Hover effect */
+        tr:hover {
+            background-color: #7e5b83;
+        }
+        .done-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Manage Orders</h2>
+        <table>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for order, order_details in orders_with_details %}
+            <tr>
+                <td>{{ order[0] }}</td>
+                <td>{{ order[1] }}</td>
+                <td>{{ order[2] }}</td>
+                <td>{{ order_details[0][5] }}</td>
+                <td><button class="done-button" onclick="updateStatus({{ order[0] }})">Mark as Done</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button onclick="exportOrders()">Export</button>
+    </div>
+
+    <script>
+        function updateStatus(orderId) {
+            if (confirm('Are you sure you want to mark this order as Done?')) {
+                // Send an AJAX request to update the order status
+                fetch('/update_status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ orderId: orderId }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Order status updated successfully.');
+                        // Reload the page to reflect the updated status
+                        location.reload();
+                    } else {
+                        throw new Error('Failed to update order status.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update order status.');
+                });
+            }
+        }
+        function exportOrders() {
+            // Fetch event data from the table
+            const table = document.querySelector("table");
+            const rows = table.querySelectorAll("tr");
+
+            // Initialize CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+
+            // Loop through rows and add data to CSV content
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll("td").forEach(cell => {
+                    rowData.push(cell.innerText);
+                });
+                csvContent += rowData.join(",") + "\n";
+            });
+
+            // Create a Blob with the CSV content
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+            // Create a temporary link element to
+            const link = document.createElement("a");
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "order_list.csv");
+            link.style.display = "none";
+
+            // Append the link to the body and click it
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up by removing the link
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Bakery Management System</h2>
+        <h3>Add Supplier</h3>
+        <input type="text" id="supplierName" placeholder="Supplier Name">
+        <br>
+        <input type="text" id="ingredients" placeholder="Ingredients">
+        <br>
+        <input type="number" id="quantity" placeholder="Quantity">
+        <br>
+        <button onclick="addSupplier()">Add Supplier</button>
+        <hr>
+        <h3>Add Product</h3>
+        <input type="text" id="productName" placeholder="Product Name">
+        <br>
+        <input type="number" id="price" placeholder="Price">
+        <br>
+        <input type="number" id="productQuantity" placeholder="Quantity">
+        <br>
+        <input type="text" id="category" placeholder="Category">
+        <br>
+        <input type="text" id="description" placeholder="Description">
+        <br>
+        <button onclick="addProduct()">Add Product</button>
+    </div>
+    <script>
+        function addSupplier() {
+            var supplierName = document.getElementById('supplierName').value;
+            var ingredients = document.getElementById('ingredients').value;
+            var quantity = document.getElementById('quantity').value;
+            fetch('/add_supplier', {
+                method: 'POST',
+                body: new URLSearchParams({ 'supplier_name': supplierName, 'ingredients': ingredients, 'quantity': quantity })
+            }).then(response => {
+                alert("Supplier added successfully");
+            });
+        }
+
+        function addProduct() {
+            var productName = document.getElementById('productName').value;
+            var price = document.getElementById('price').value;
+            var productQuantity = document.getElementById('productQuantity').value;
+            var category = document.getElementById('category').value;
+            var description = document.getElementById('description').value;
+            fetch('/add_product', {
+                method: 'POST',
+                body: new URLSearchParams({ 'name': productName, 'price': price, 'quantity': productQuantity, 'category': category, 'description': description })
+            }).then(response => {
+                alert("Product added successfully");
+            });
+        }
+    </script>
+</body>
+</html>

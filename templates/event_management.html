@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eff5eb;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input[type="text"], input[type="date"] {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-family: Arial, sans-serif;
+            color: #f2f2f2;
+        }
+
+        /* Table header */
+        th {
+            background-color: #716868;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Table rows */
+        tr {
+            border-bottom: 1px solid #ddd;
+            background-color: #7e5b83;
+        }
+
+        /* Table data */
+        td {
+            text-align: left;
+            padding: 12px;
+        }
+        /* Hover effect */
+        tr:hover {
+            background-color: #514165;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Add Event</h2>
+        <form action="/add_event" method="post">
+            <label for="eventName">Event Name:</label>
+            <input type="text" id="eventName" name="eventName" required>
+            <br>
+            <label for="eventDate">Event Date:</label>
+            <input type="date" id="eventDate" name="eventDate" required>
+            <br>
+            <label for="eventLocation">Event Location:</label>
+            <input type="text" id="eventLocation" name="eventLocation" required>
+            <br>
+            <label for="eventDescription">Event Description:</label>
+            <input type="text" id="eventDescription" name="eventDescription" required>
+            <br>
+            <button type="submit">Add Event</button>
+        </form>
+        <h2>Event List</h2>
+        <!-- Search input -->
+        <input type="text" id="searchInput" onkeyup="searchEvents()" placeholder="Search for events...">
+
+        <!-- Table to display events -->
+        <table id="eventTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event[0] }}</td>
+                    <td>{{ event[1] }}</td>
+                    <td>{{ event[2] }}</td>
+                    <td>{{ event[3] }}</td>
+                    <td>{{ event[4] }}</td>
+                    <td>
+                        <!-- Edit and delete buttons -->
+                        <button onclick="editEvent({{ event[0] }})">Edit</button>
+                        <button onclick="deleteEvent({{ event[0] }})">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Export button -->
+        <button onclick="exportEvents()">Export</button>
+    </div>
+
+    <!-- JavaScript code for search, edit, delete, and export functions -->
+    <script>
+        // Function to search events based on input
+        function searchEvents() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("eventTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1]; // Change index to match event name column
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // Function to edit an event
+        function editEvent(eventId) {
+            // Redirect to the edit event page with the eventId as a query parameter
+            window.location.href = '/edit_event?event_id=' + eventId;
+        }
+
+        // Function to delete an event
+        function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                // Redirect to the delete event route with the eventId as a query parameter
+                window.location.href = '/delete_event?event_id=' + eventId;
+            }
+        }
+
+        // Function to export events
+        function exportEvents() {
+            // Fetch event data from the table
+            const table = document.querySelector("table");
+            const rows = table.querySelectorAll("tr");
+
+            // Initialize CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+
+            // Loop through rows and add data to CSV content
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll("td").forEach(cell => {
+                    rowData.push(cell.innerText);
+                });
+                csvContent += rowData.join(",") + "\n";
+            });
+
+            // Create a Blob with the CSV content
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+            // Create a temporary link element to
+            const link = document.createElement("a");
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "event_list.csv");
+            link.style.display = "none";
+
+            // Append the link to the body and click it
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up by removing the link
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

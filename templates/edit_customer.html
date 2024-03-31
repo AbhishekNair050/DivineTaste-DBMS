@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eff5eb;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input[type="text"], input[type="number"] {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Customer</h2>
+        <form action="/edit_customer" method="post">
+            <input type="hidden" name="customer_id" value="{{ customer[0] }}">
+            <label for="fname">First Name:</label>
+            <input type="text" id="fname" name="fname" value="{{ customer[1] }}" required>
+            <br>
+            <label for="lname">Last Name:</label>
+            <input type="text" id="lname" name="lname" value="{{ customer[2] }}" required>
+            <br>
+            <label for="payment_id">Payment ID:</label>
+            <input type="text" id="payment_id" name="payment_id" value="{{ customer[3] }}" required>
+            <br>
+            <label for="order_id">Order ID:</label>
+            <input type="text" id="order_id" name="order_id" value="{{ customer[4] }}" required>
+            <br>
+            <button type="submit">Update Customer</button>
+        </form>
+    </div>
+</body>
+</html>

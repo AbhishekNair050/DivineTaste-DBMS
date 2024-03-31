@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eff5eb;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-family: Arial, sans-serif;
+            color: #f2f2f2;
+        }
+
+        /* Table header */
+        th {
+            background-color: #716868;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Table rows */
+        tr {
+            border-bottom: 1px solid #ddd;
+            background-color: #514165;
+        }
+
+        /* Table data */
+        td {
+            text-align: left;
+            padding: 12px;
+        }
+        /* Hover effect */
+        tr:hover {
+            background-color: #7e5b83;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Manage Products</h2>
+        <h3>Add New Product</h3>
+        <form action="/add_product" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required>
+            <br>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required>
+            <br>
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
+            <br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+            <br>
+            <button type="submit">Add Product</button>
+        </form>
+        <hr>
+        <h3>Existing Products</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{ product[0] }}</td>
+                <td>{{ product[1] }}</td>
+                <td>{{ product[2] }}</td>
+                <td>{{ product[3] }}</td>
+                <td>{{ product[4] }}</td>
+                <td>{{ product[5] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

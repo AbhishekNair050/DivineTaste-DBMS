@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales and Revenue Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eff5eb;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-family: Arial, sans-serif;
+            color: #f2f2f2;
+        }
+
+        /* Table header */
+        th {
+            background-color: #716868;
+            text-align: left;
+            padding: 12px;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Table rows */
+        tr {
+            border-bottom: 1px solid #ddd;
+            background-color: #7e5b83;
+        }
+
+        /* Table data */
+        td {
+            text-align: left;
+            padding: 12px;
+        }
+        /* Hover effect */
+        tr:hover {
+            background-color: #514165;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="date"] {
+            width: 30%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form for Total Revenue -->
+        <h3>Total Revenue</h3>
+        <form id="totalRevenueForm">
+            <label for="totalRevenueStartDate">Start Date:</label>
+            <input type="date" id="totalRevenueStartDate" name="totalRevenueStartDate" required>
+            <br>
+            <label for="totalRevenueEndDate">End Date:</label>
+            <input type="date" id="totalRevenueEndDate" name="totalRevenueEndDate" required>
+            <br>
+            <button type="button" onclick="getTotalRevenue()">View Total Revenue</button>
+        </form>
+
+        <!-- Table to display Total Revenue -->
+        <div id="totalRevenueTable" style="display: none;">
+            <h3>Total Revenue</h3>
+            <table id="totalRevenueData">
+                <thead>
+                    <tr>
+                        <th>Total Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be inserted here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function getTotalRevenue() {
+            var startDate = document.getElementById("totalRevenueStartDate").value;
+            var endDate = document.getElementById("totalRevenueEndDate").value;
+
+            // Make an AJAX request to fetch total revenue
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/total_revenue", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var totalRevenue = JSON.parse(xhr.responseText);
+                    displayTotalRevenue(totalRevenue);
+                }
+            };
+            var data = JSON.stringify({ startDate: startDate, endDate: endDate });
+            xhr.send(data);
+        }
+
+        function displayTotalRevenue(totalRevenue) {
+            var totalRevenueTable = document.getElementById("totalRevenueTable");
+            var totalRevenueData = document.getElementById("totalRevenueData").getElementsByTagName("tbody")[0];
+            totalRevenueData.innerHTML = ""; // Clear previous data
+            var newRow = totalRevenueData.insertRow();
+            var cell = newRow.insertCell(0);
+            cell.innerText = totalRevenue;
+            totalRevenueTable.style.display = "block"; // Show the table
+        }
+    </script>
+</body>
+</html>
